@@ -9,19 +9,14 @@
     <div id="result"></div>
 
     <script>
-        async function getSubstitutionData(year, month, day) {
-          const formData = new URLSearchParams();
-          formData.append("metai", year);
-          formData.append("menuo", month);
-          formData.append("diena", day);
-      
+        async function getData(year, month, day) {
           try {
-            const response = await fetch("http://www.vzg.lt/pavadavimai/", {
-              method: "POST",
+            const response = await fetch('/proxy', {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
+                  'Content-Type': 'application/json',
               },
-              body: formData.toString()
+              body: JSON.stringify({ year: "2025", month: "04", day: "14" }),
             });
       
             const htmlText = await response.text();
@@ -31,9 +26,7 @@
             console.error("Error fetching data:", error);
           }
         }
-      
-        // Example usage:
-        getSubstitutionData("2025", "04", "14");
+        getData();
       </script>
 </body>
 
