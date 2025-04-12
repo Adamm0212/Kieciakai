@@ -1,33 +1,233 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<title>Kieciakai</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Include W3.CSS for styling -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+<!-- Include Google Fonts for Raleway font -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+/* Set the font for the body and headings */
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+
+/* Styling for the absent teachers content container */
+#absent-teachers-content {
+        display: flex; /* Use flexbox for horizontal layout */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        gap: 20px; /* Add spacing between day containers */
+        padding: 10px; /* Add padding inside the container */
+    }
+
+/* Styling for each day's container */
+.day-container {
+        min-width: 300px; /* Minimum width for each day's container */
+        border: 1px solid #ccc; /* Add a border */
+        border-radius: 10px; /* Round the corners */
+        padding: 10px; /* Add padding inside the container */
+        background-color: #f9f9f9; /* Light background color */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    }
+
+/* Styling for the day container headings */
+.day-container h4 {
+        margin-top: 0; /* Remove top margin */
+    }
+</style>
 </head>
-<body>
-    <div id="result"></div>
+<body class="w3-light-grey w3-content" style="max-width:1600px">
+<!-- Set the body background color and max width -->
 
-    <script>
-        async function getData(year, month, day) {
-          try {
-            const response = await fetch('/proxy', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ year: "2025", month: "04", day: "14" }),
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;left:0;right:auto;" id="mySidebar"><br> 
+  <div class="w3-container"> 
+    <!-- Close button for the sidebar -->
+
+    <!-- Sidebar title -->
+    <h4><b>LIST</b></h4> 
+  </div> 
+  <div class="w3-bar-block"> 
+    <!-- Link to the main page -->
+    <a href="#home" onclick="showSection('home');" class="w3-bar-item w3-button w3-padding">
+      <i class="fa fa-home fa-fw w3-margin-right"></i>HOME
+    </a>
+    <!-- Link to load absent teachers data -->
+    <a href="#absent-teachers" onclick="showSection('absent-teachers'); loadAbsentTeachers();" class="w3-bar-item w3-button w3-padding">
+      <i class="fa fa-users fa-fw w3-margin-right"></i>ABSENT TEACHERS
+    </a> 
+    <!-- Link to the contact section -->
+    <a href="#contact" onclick="showSection('contact');" class="w3-bar-item w3-button w3-padding">
+      <i class="fa fa-envelope fa-fw w3-margin-right"></i>CONTACT
+    </a>
+  </div> 
+  <div class="w3-panel w3-large">
+    <!-- Social media icons -->
+    <i class="fa fa-facebook-official w3-hover-opacity"></i>
+    <i class="fa fa-instagram w3-hover-opacity"></i>
+    <i class="fa fa-snapchat w3-hover-opacity"></i>
+    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+    <i class="fa fa-twitter w3-hover-opacity"></i>
+    <i class="fa fa-linkedin w3-hover-opacity"></i>
+  </div>
+</nav>
+ 
+<!-- Overlay effect when opening sidebar on small screens -->
+
+
+<!-- Main content -->
+<div class="w3-main" style="margin-left:150px">
+  <!-- Home Section -->
+  <div id="home" class="w3-container w3-padding-large section">
+    <h4><b>Welcome to the Main Page</b></h4>
+    <p>This is the main page content.</p>
+  </div>
+  <!-- Absent Teachers Section -->
+  <div id="absent-teachers" class="w3-container w3-padding-large section" style="display:none;">
+    <h4><b>Absent Teachers</b></h4>
+    <!-- Container for displaying absent teachers data -->
+    <div id="absent-teachers-content"></div>
+  </div>
+  <!-- Contact Section -->
+  <div id="contact" class="w3-container w3-padding-large section" style="display:none;">
+    <h4><b>Contact</b></h4>
+    <p>Kieciakukieciakai@gmail.com.</p>
+    </div>
+</div>
+
+<script>
+
+function showSection(sectionId) {
+    // Hide all sections
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        section.style.display = 'none'; // Hide each section
+    });
+
+    // Show the selected section
+    document.getElementById(sectionId).style.display = 'block';
+}
+
+// Function to open the sidebar
+function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+}
+
+// Function to load and display absent teachers data
+async function loadAbsentTeachers() {
+    const today = new Date(); // Get today's date
+    const promises = []; // Array to store promises for fetching data
+
+    // Loop through the next 7 days
+    for (let i = 0; i < 7; i++) {
+        const futureDate = new Date(today); // Create a new date object
+        futureDate.setDate(today.getDate() + i); // Increment the date by i days
+
+        const year = futureDate.getFullYear(); // Get the year
+        const month = String(futureDate.getMonth() + 1).padStart(2, '0'); // Get the month (0-based)
+        const day = String(futureDate.getDate()).padStart(2, '0'); // Get the day
+
+        promises.push(getData(year, month, day)); // Add the fetch promise to the array
+    }
+
+    const results = await Promise.all(promises); // Wait for all promises to resolve
+
+    // Sort results by date
+    results.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // Display the formatted data in the "Absent Teachers" tab
+    const absentTeachersContent = document.getElementById('absent-teachers-content');
+    absentTeachersContent.innerHTML = ''; // Clear previous content
+
+    results.forEach(({ date, data }) => {
+        const dayContainer = document.createElement('div'); // Create a container for the day
+        dayContainer.classList.add('day-container'); // Add styling class
+
+        const dateHeader = document.createElement('h4'); // Create a header for the date
+        dateHeader.textContent = `Date: ${date}`;
+        dayContainer.appendChild(dateHeader); // Add the date header to the container
+
+        if (data && Object.keys(data).length > 0) {
+            // If there is data for the day
+            Object.keys(data).forEach(teacher => {
+                const teacherHeader = document.createElement('h5'); // Create a header for the teacher
+                teacherHeader.textContent = `Teacher: ${teacher}`;
+                dayContainer.appendChild(teacherHeader); // Add the teacher header to the container
+
+                const lessonList = document.createElement('ul'); // Create a list for lessons
+                data[teacher].forEach(({ lesson, class: className, notes }) => {
+                    const lessonItem = document.createElement('li'); // Create a list item for the lesson
+                    lessonItem.innerHTML = `
+                        <strong>Lesson:</strong> ${lesson}<br>
+                        <strong>Class:</strong> ${className}<br>
+                        <strong>Notes:</strong> ${notes}
+                    `;
+                    lessonList.appendChild(lessonItem); // Add the lesson item to the list
+                });
+                dayContainer.appendChild(lessonList); // Add the lesson list to the container
             });
-      
-            const htmlText = await response.text();
-            document.getElementById("result").innerHTML = htmlText;
-      
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          }
+        } else {
+            // If there is no data for the day
+            const noDataMessage = document.createElement('p');
+            noDataMessage.textContent = 'No absent teachers for this day.';
+            dayContainer.appendChild(noDataMessage); // Add the message to the container
         }
-        getData();
-      </script>
-</body>
 
+        absentTeachersContent.appendChild(dayContainer); // Add the day container to the content area
+    });
+}
+
+// Function to fetch data for a specific day
+async function getData(year, month, day) {
+    try {
+        const response = await fetch('/proxy', {
+            method: 'POST', // Use POST method
+            headers: {
+                'Content-Type': 'application/json', // Set content type to JSON
+            },
+            body: JSON.stringify({ year, month, day }), // Send the date as JSON
+        });
+
+        const htmlText = await response.text(); // Get the response as text
+
+        // Parse the HTML text into a DOM structure
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlText, 'text/html');
+
+        // Extract the table rows from the .gallery table
+        const rows = doc.querySelectorAll('.gallery tr');
+
+        // Organize the data into a grouped structure
+        const data = {};
+        let lastTeacher = ''; // Keep track of the last teacher's name
+        Array.from(rows).forEach(row => {
+            const columns = row.querySelectorAll('td'); // Get all columns in the row
+            if (columns.length > 0) {
+                const teacher = columns[2]?.querySelector('font')?.textContent.trim() || lastTeacher; // Get the teacher's name
+                const lesson = columns[3]?.querySelector('div')?.textContent.trim() || ''; // Get the lesson
+                const className = columns[4]?.querySelector('div')?.textContent.trim() || ''; // Get the class
+                const notes = columns[5]?.querySelector('div')?.textContent.trim() || ''; // Get the notes
+
+                if (teacher) {
+                    lastTeacher = teacher; // Update the last teacher's name
+                    if (!data[teacher]) {
+                        data[teacher] = []; // Initialize the teacher's data if not already present
+                    }
+                    data[teacher].push({ lesson, class: className, notes }); // Add the lesson data
+                }
+            }
+        });
+
+        return { date: `${year}-${month}-${day}`, data }; // Return the date and data
+    } catch (error) {
+        console.error("Error fetching data:", error); // Log any errors
+        return { date: `${year}-${month}-${day}`, data: null }; // Return null data on error
+    }
+}
+</script>
+
+</body>
 </html>
