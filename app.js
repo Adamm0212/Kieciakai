@@ -12,10 +12,11 @@ const __dirname = path.dirname(__filename);
 
 // Middleware to parse JSON
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve the HTML file
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Proxy route for POST requests

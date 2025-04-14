@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kieciakai</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <!-- Hamburger Button -->
+    <button id="open-sidebar-btn" class="hamburger-btn">☰</button>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="close-btn-container">
+            <button id="close-sidebar-btn" class="close-btn">X</button>
+        </div>
+        <nav>
+            <ul>
+                <li><a onclick="showSection('main-section')">Main</a></li>
+                <li><a onclick="showSection('absent-teachers'); loadAbsentTeachers()">Absent Teachers</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="page-wrapper">
+        <main>
+            <!-- Main Section -->
+            <section id="main-section" class="section">
+                <h1>Welcome to Kieciakai</h1>
+                <p>This is the main section of the website.</p>
+            </section>
+
+            <!-- Absent Teachers Section -->
+            <section id="absent-teachers" style="display: none;" class="section">
+                <h1>Pavadavimai</h1>
+                <div id="absent-teachers-content"></div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Kieciakai. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Sidebar functionality
+        const openSidebarBtn = document.getElementById('open-sidebar-btn');
+        const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+        const sidebar = document.getElementById('sidebar');
+
+        openSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.add('open');
+            // openSidebarBtn.style.display = 'none';
+        });
+
+        closeSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.remove('open')
+            // openSidebarBtn.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
