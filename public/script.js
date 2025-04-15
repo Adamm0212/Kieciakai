@@ -19,7 +19,7 @@ async function loadAbsentTeachers() {
     const promises = []; // Array to store promises for fetching data
 
     // Loop through the next 7 days
-    for (let i = -10; i < -3; i++) {
+    for (let i = 0; i < 7; i++) {
         const futureDate = new Date(today); // Create a new date object
         futureDate.setDate(today.getDate() + i); // Increment the date by i days
 
